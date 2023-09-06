@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StatsServiceImpl implements StatsService{
+public class StatsServiceImpl implements StatsService {
 
     private final StatsRepository statsRepository;
+
     @Override
     public void addHit(EndpointHitDto endpointHitDto) {
         statsRepository.save(HitMapper.fromDto(endpointHitDto));
