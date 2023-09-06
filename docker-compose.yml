@@ -15,9 +15,9 @@ services:
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_USER = root
-      - POSTGRES_PASSWORD = root
-      - POSTGRES_DB = stats_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=stats_db
 
   ewm-service:
     build: ./service
