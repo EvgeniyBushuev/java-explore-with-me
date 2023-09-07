@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
 
-    @Query("select h.app as app, h.uri as uri, count(distinct h.ip) as hits " +
+    @Query("select new ru.practicum.ewm.stats.dto.ViewStatsDto(h.app as app, h.uri as uri, count(distinct h.ip) as hits)" +
             "from EndpointHit h " +
             "where h.timestamp between :start and :end " +
             "and ((:uris) is null or h.uri in :uris) " +
@@ -20,7 +20,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
             "order by hits desc")
     List<ViewStatsDto> findUniqueStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("select h.app as app, h.uri as uri, count(h.ip) as hits " +
+    @Query("select new ru.practicum.ewm.stats.dto.ViewStatsDto(h.app as app, h.uri as uri, count(h.ip) as hits)" +
             "from EndpointHit h " +
             "where h.timestamp between :start and :end " +
             "and ((:uris) is null or h.uri in :uris) " +
