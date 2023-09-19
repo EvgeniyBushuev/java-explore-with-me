@@ -1,6 +1,7 @@
 package ru.practicum.ewm.service.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.ewm.service.model.enus.State;
 
 import javax.persistence.*;
@@ -24,7 +25,10 @@ public class Event {
     private String annotation;
     @Column(name = "description")
     private String description;
+    @CreationTimestamp
     @Column(name = "create_date")
+    private LocalDateTime createDate;
+    @Column(name = "event_date")
     private LocalDateTime eventDate;
     @Column(name = "paid")
     private Boolean isPaid;

@@ -66,7 +66,23 @@ public class EventService {
     @Transactional
     public FullEventDto updateByAdmin(Long eventId, UpdateEventDto updateEventDto) {
 
+        checkEventDate(updateEventDto.getEventDate());
+
         Event event = findEventById(eventId);
+
+        if (updateEventDto.getStateAction() != null) {
+            if (!State.PENDING.equals(event.getState()))
+                throw new DataConflictException("event not Pending");
+            switch (updateEventDto.getStateAction()) {
+                case "PUBLISH_EVENT":
+                    event.setState(State.PUBLISHED);
+                    event.setPublishedDate(LocalDateTime.now());
+                    break;
+                case "REJECT_EVENT":
+                    event.setState(State.CANCELED);
+                    break;
+            }
+        }
 
         if (updateEventDto.getAnnotation() != null) {
             event.setAnnotation(updateEventDto.getAnnotation());
@@ -96,20 +112,8 @@ public class EventService {
             event.setParticipantLimit(updateEventDto.getParticipantLimit());
         }
 
-        if (updateEventDto.getRequestModeration() != null) {
-            event.setIsRequestModeration(updateEventDto.getRequestModeration());
-        }
-
-        if (updateEventDto.getStateAction() != null) {
-            switch (updateEventDto.getStateAction()) {
-                case "PUBLISH_EVENT":
-                    event.setState(State.PUBLISHED);
-                    event.setPublishedDate(LocalDateTime.now());
-                    break;
-                case "REJECT_EVENT":
-                    event.setState(State.CANCELED);
-                    break;
-            }
+        if (updateEventDto.getIsRequestModeration() != null) {
+            event.setIsRequestModeration(updateEventDto.getIsRequestModeration());
         }
 
         if (updateEventDto.getTitle() != null) {
@@ -129,11 +133,14 @@ public class EventService {
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, SortType sort, int from, int size, HttpServletRequest request) {
 
+        statsService.addHit(request);
+
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Start date must be before end date");
         }
 
-        List<Event> events = eventRepository.getAllByPublic(text, categories, paid, rangeStart, rangeEnd);
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<Event> events = eventRepository.getAllByPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
 
         if (events.isEmpty()) {
             return Collections.emptyList();
@@ -172,12 +179,12 @@ public class EventService {
                 break;
         }
 
-        statsService.addHit(request);
-
         return shortEventDto;
     }
 
     public FullEventDto getEventByPublic(Long eventId, HttpServletRequest request) {
+
+        statsService.addHit(request);
 
         Event event = findEventById(eventId);
 
@@ -190,8 +197,6 @@ public class EventService {
 
         event.setViews(views.getOrDefault(event.getId(), 0L));
         event.setConfirmedRequests(confirmedRequests.getOrDefault(event.getId(), 0L));
-
-        statsService.addHit(request);
 
         return EventMapper.toFullDto(event);
     }
@@ -249,16 +254,13 @@ public class EventService {
     @Transactional
     public FullEventDto addByPrivate(Long userId, NewEventDto newEventDto) {
 
-        if (LocalDateTime.now().plusHours(2).isAfter(newEventDto.getEventDate())) {
-            throw new DataConflictException("The event date must be 2 hours from the current time or later.");
-        }
+        checkEventDate(newEventDto.getEventDate());
 
         User eventUser = findUserById(userId);
         Category eventCategory = findCategoryById(newEventDto.getCategory());
         Location eventLocation = getOrSaveLocation(LocationMapper.toDto(newEventDto.getLocation()));
 
-        Event newEvent = EventMapper.fromDto(newEventDto, eventCategory, eventUser, eventLocation, LocalDateTime.now(),
-                State.PENDING);
+        Event newEvent = EventMapper.fromDto(newEventDto, eventCategory, eventUser, eventLocation, State.PENDING);
 
         newEvent.setViews(0L);
         newEvent.setConfirmedRequests(0L);
@@ -266,12 +268,16 @@ public class EventService {
         return EventMapper.toFullDto(eventRepository.save(newEvent));
     }
 
+    private void checkEventDate(LocalDateTime dateTime) {
+        if (Objects.nonNull(dateTime) && LocalDateTime.now().plusHours(2).isAfter(dateTime)) {
+            throw new BadRequestException("The event date must be 2 hours from the current time or later.");
+        }
+    }
+
     @Transactional
     public FullEventDto updateByPrivate(Long userId, Long eventId, UserUpdateEventDto userUpdateEventDto) {
 
-        if (LocalDateTime.now().plusHours(2).isAfter(userUpdateEventDto.getEventDate())) {
-            throw new DataConflictException("The event date must be 2 hours from the current time or later.");
-        }
+        checkEventDate(userUpdateEventDto.getEventDate());
 
         findUserById(userId);
 
@@ -311,8 +317,8 @@ public class EventService {
             event.setParticipantLimit(userUpdateEventDto.getParticipantLimit());
         }
 
-        if (userUpdateEventDto.getRequestModeration() != null) {
-            event.setIsRequestModeration(userUpdateEventDto.getRequestModeration());
+        if (userUpdateEventDto.getIsRequestModeration() != null) {
+            event.setIsRequestModeration(userUpdateEventDto.getIsRequestModeration());
         }
 
         if (userUpdateEventDto.getStateAction() != null) {

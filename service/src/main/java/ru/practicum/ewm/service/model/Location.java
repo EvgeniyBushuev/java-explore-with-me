@@ -1,8 +1,6 @@
 package ru.practicum.ewm.service.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,15 +9,15 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id")
     private Long id;
-
     @Column(name = "lat")
     private float lat;
-
     @Column(name = "lon")
     private float lon;
 }

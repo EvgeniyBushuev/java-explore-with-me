@@ -35,29 +35,28 @@ public class EventControllerPrivate {
 
     @GetMapping("/{eventId}")
     public FullEventDto getById(@PathVariable long userId,
-                                    @PathVariable long eventId) {
+                                @PathVariable long eventId) {
         return eventService.getByIdByInitiator(userId, eventId);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<ParticipationRequestDto> getAllByPrivate(@PathVariable long userId,
-                                                                             @PathVariable long eventId) {
+                                                         @PathVariable long eventId) {
         return eventService.getParticipationRequestsByPrivate(userId, eventId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FullEventDto create(@PathVariable long userId,
-                               @Valid @RequestBody NewEventDto newDto) {
+    public FullEventDto create(@PathVariable long userId, @Valid @RequestBody NewEventDto newDto) {
         log.info("Создание нового события пользователем с id {} и параметрами {}", userId, newDto);
         return eventService.addByPrivate(userId, newDto);
     }
 
     @PatchMapping("/{eventId}")
     public FullEventDto patchEvent(@PathVariable long userId,
-                                       @PathVariable long eventId,
-                                       @Valid @RequestBody UserUpdateEventDto userUpdateEventDto) {
-        log.info("Запрос на измение события пользователем с id {}", userId);
+                                   @PathVariable long eventId,
+                                   @Valid @RequestBody UserUpdateEventDto userUpdateEventDto) {
+        log.info("Запрос на измение события пользователем с id {}, date={}", userId, userUpdateEventDto);
         return eventService.updateByPrivate(userId, eventId, userUpdateEventDto);
     }
 

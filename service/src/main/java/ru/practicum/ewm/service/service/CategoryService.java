@@ -39,7 +39,7 @@ public class CategoryService {
     }
 
     public List<CategoryDto> getAll(int from, int size) {
-        return categoryRepository.findAll(PageRequest.of(from, size)).getContent()
+        return categoryRepository.findAll(PageRequest.of(from / size, size)).getContent()
                 .stream()
                 .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());
@@ -54,4 +54,3 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 }
-

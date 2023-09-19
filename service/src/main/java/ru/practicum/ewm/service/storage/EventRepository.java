@@ -19,7 +19,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where ((:users) is null or e.initiator.id in :users) " +
             "and ((:states) is null or e.state in :states) " +
             "and ((:categories) is null or e.category.id in :categories) " +
-            "and (e.eventDate between :rangeStart and :rangeEnd)")
+            "and (:rangeStart is null or e.eventDate >= :rangeStart)" +
+            "and (:rangeEnd is null or e.eventDate <= :rangeEnd)")
     List<Event> findAllByAdmin(@Param("users") List<Long> users,
                                @Param("states") List<State> states,
                                @Param("categories") List<Long> categories,
@@ -33,20 +34,22 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where (e.state = 'PUBLISHED') " +
             "and (lower(e.annotation) like lower(concat('%', :text, '%')) or lower(e.description) like lower(concat('%', :text, '%'))) " +
             "and ((:categories) is null or e.category.id in :categories) " +
-            "and ((:paid) is null or e.paid = :paid) " +
-            "and (e.eventDate between :rangeStart and :rangeEnd)")
+            "and ((:paid) is null or e.isPaid = :paid) " +
+            "and (:rangeStart is null or e.eventDate >= :rangeStart)" +
+            "and (:rangeEnd is null or e.eventDate <= :rangeEnd)")
     List<Event> getAllByPublic(@Param("text") String text,
-                             @Param("categories") List<Long> categories,
-                             @Param("paid") Boolean paid,
-                             @Param("rangeStart") LocalDateTime rangeStart,
-                             @Param("rangeEnd") LocalDateTime rangeEnd);
+                               @Param("categories") List<Long> categories,
+                               @Param("paid") Boolean paid,
+                               @Param("rangeStart") LocalDateTime rangeStart,
+                               @Param("rangeEnd") LocalDateTime rangeEnd,
+                               Pageable pageable);
 
     @Query("select e from Event e " +
             "where ((:text is null or upper(e.annotation) like upper(concat('%', :text, '%'))) " +
             "or (:text is null or upper(e.description) like upper(concat('%', :text, '%')))) " +
             "and (:state is null or e.state = :state) " +
             "and (:categories is null or e.category.id in :categories) " +
-            "and (:paid is null or e.paid = :paid) " +
+            "and (:paid is null or e.isPaid = :paid) " +
             "and (cast(:rangeStart as java.time.LocalDateTime) is null or e.eventDate >= :rangeStart) " +
             "and (cast(:rangeEnd as java.time.LocalDateTime) is null or e.eventDate <= :rangeEnd) ")
     List<Event> getAllEvents(@Param("text") String text,
@@ -81,7 +84,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "or (:text is null or upper(e.description) like upper(concat('%', :text, '%')))) " +
             "and (:state is null or e.state = :state) " +
             "and (:categories is null or e.category.id in :categories) " +
-            "and (:paid is null or e.paid = :paid) " +
+            "and (:paid is null or e.isPaid = :paid) " +
             "and (cast(:rangeStart as java.time.LocalDateTime) is null or e.eventDate >= :rangeStart) " +
             "and (cast(:rangeEnd as java.time.LocalDateTime) is null or e.eventDate <= :rangeEnd) " +
             "AND (SELECT COUNT(pr) FROM ParticipationRequest pr WHERE pr.event.id = e.id " +
@@ -93,5 +96,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                    @Param("rangeStart") LocalDateTime rangeStart,
                                    @Param("rangeEnd") LocalDateTime rangeEnd,
                                    Pageable pageable);
+
     List<Event> findAllByIdIn(List<Long> eventsId);
 }

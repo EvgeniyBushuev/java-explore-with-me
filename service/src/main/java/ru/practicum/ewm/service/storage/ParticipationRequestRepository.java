@@ -13,14 +13,16 @@ import java.util.List;
 @Repository
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
     List<ParticipationRequest> findAllByEventId(Long id);
-    List<ParticipationRequest> findAllByIdIn(List<Long> ids);
-    List<ParticipationRequest> findAllByRequesterId(Long id);
-    @Query("select count(pr) from ParticipationRequests pr where pr.event.id = :eventId and pr.status = :status")
-    Integer countByEventIdAndStatus(@Param("eventId") Long eventId,
-                                 @Param("status") Status status);
 
-    @Query("select new ru.practicum.service.dto.request.ParticipationRequestStats(r.event.id, count(r.id)) " +
-            "from Request as r " +
+    List<ParticipationRequest> findAllByIdIn(List<Long> ids);
+
+    List<ParticipationRequest> findAllByRequesterId(Long id);
+
+    @Query("select count(pr) from ParticipationRequest pr where pr.event.id = :eventId and pr.status = :status")
+    Integer countByEventIdAndStatus(@Param("eventId") Long eventId, @Param("status") Status status);
+
+    @Query("select new ru.practicum.ewm.service.dto.request.ParticipationRequestStats(r.event.id, count(r.id)) " +
+            "from ParticipationRequest as r " +
             "where r.event.id in ?1 " +
             "and r.status = 'CONFIRMED' " +
             "group by r.event.id")

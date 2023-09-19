@@ -22,7 +22,6 @@ public class NewEventDto {
     @NotBlank
     @Size(min = 3, max = 120)
     private String title;
-
     @NotBlank
     @Size(min = 20, max = 2000)
     private String annotation;
@@ -37,9 +36,8 @@ public class NewEventDto {
     private LocalDateTime eventDate;
     @NotNull
     private Location location;
-    @NotNull
-    private Boolean isPaid;
+    private Boolean isPaid = false;
     @PositiveOrZero
-    private Integer participantLimit;
-    private Boolean isRequestModeration;
+    private Integer participantLimit = 0;
+    private Boolean isRequestModeration = true;
 }

@@ -32,12 +32,12 @@ public class UserControllerAdmin {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getAll(@RequestParam(required = false) List<Long> ids,
-                                @Valid @RequestParam(defaultValue = "0") @Min(0) int from,
-                                @Valid @RequestParam(defaultValue = "10") @Min(1) int size) {
-
+    public List<UserDto> getAll(
+            @RequestParam(required = false) List<Long> ids,
+            @Valid @RequestParam(defaultValue = "0") @Min(0) int from,
+            @Valid @RequestParam(defaultValue = "10") @Min(1) int size) {
         log.info("Запрос списка пользователей {}", ids);
-        return userService.getAll(ids, from , size);
+        return userService.getAll(ids, from, size);
     }
 
     @DeleteMapping("/{userId}")

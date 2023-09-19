@@ -31,6 +31,6 @@ public class UpdateEventDto {
     private Boolean isPaid;
     @PositiveOrZero
     private Integer participantLimit;
-    private Boolean requestModeration;
+    private Boolean isRequestModeration;
     private String stateAction;
 }

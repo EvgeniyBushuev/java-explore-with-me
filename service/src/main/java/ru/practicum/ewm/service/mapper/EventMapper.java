@@ -13,12 +13,11 @@ public class EventMapper {
                                 Category category,
                                 User user,
                                 Location location,
-                                LocalDateTime eventDate,
-                                State state ) {
+                                State state) {
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
                 .category(category)
-                .eventDate(eventDate)
+                .eventDate(newEventDto.getEventDate())
                 .description(newEventDto.getDescription())
                 .publishedDate(LocalDateTime.now())
                 .initiator(user)
@@ -51,13 +50,14 @@ public class EventMapper {
                 .annotation(event.getAnnotation())
                 .category(event.getCategory())
                 .eventDate(event.getEventDate())
+                .createdOn(event.getCreateDate())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
                 .initiator(event.getInitiator())
                 .location(event.getLocation())
                 .isPaid(event.getIsPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedDate(event.getPublishedDate())
+                .publishedOn(event.getPublishedDate())
                 .isRequestModeration(event.getIsRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())

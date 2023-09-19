@@ -25,8 +25,7 @@ public class ParticipationRequestPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto create(@PathVariable Long userId,
-                                                      @RequestParam Long eventId) {
+    public ParticipationRequestDto create(@PathVariable Long userId, @RequestParam Long eventId) {
         log.info("Запрос на участие в событии с id {} пользователем с id {}", eventId, userId);
         return requestService.add(userId, eventId);
     }
@@ -38,6 +37,4 @@ public class ParticipationRequestPrivateController {
         log.info("Запрос на отмену участия в событии от пользователя с id {}", userId);
         return requestService.update(userId, requestId);
     }
-
-
 }

@@ -47,9 +47,8 @@ public class ParticipationRequestService {
         }
 
         if (event.getParticipantLimit() > 0) {
-            if (event.getParticipantLimit() <= participationRequestRepository
-                    .countByEventIdAndStatus(eventId, Status.CONFIRMED)) {
-
+            Integer confirmedRequests = participationRequestRepository.countByEventIdAndStatus(eventId, Status.CONFIRMED);
+            if (event.getParticipantLimit() <= confirmedRequests) {
                 throw new DataConflictException("The number of participation requests " +
                         "has exceeded the limit for the event");
             }
@@ -61,7 +60,6 @@ public class ParticipationRequestService {
         participationRequest.setCreatedTime(LocalDateTime.now());
         participationRequest.setStatus(event.getIsRequestModeration()
                 && !event.getParticipantLimit().equals(0) ? Status.PENDING : Status.CONFIRMED);
-
         return ParticipationRequestMapper.toDto(participationRequestRepository.save(participationRequest));
     }
 

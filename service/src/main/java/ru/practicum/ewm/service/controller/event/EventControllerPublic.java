@@ -43,11 +43,9 @@ public class EventControllerPublic {
     }
 
     @GetMapping("{eventId}")
-    public FullEventDto getById(@PathVariable long eventId,
-                                    HttpServletRequest request) {
+    public FullEventDto getById(@PathVariable long eventId, HttpServletRequest request) {
 
         log.info("Запрос события с ID {} от PUBLIC", eventId);
         return eventService.getEventByPublic(eventId, request);
     }
-
 }

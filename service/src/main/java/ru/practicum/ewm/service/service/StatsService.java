@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import ru.practicum.ewm.service.model.Event;
 import ru.practicum.ewm.service.storage.ParticipationRequestRepository;
 import ru.practicum.ewm.stats.client.StatsClient;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 @RequiredArgsConstructor
 public class StatsService {
 
@@ -31,6 +33,7 @@ public class StatsService {
                 .app(appName)
                 .uri(request.getRequestURI())
                 .ip(request.getRemoteAddr())
+                .hitTimestamp(LocalDateTime.now())
                 .build();
 
         statsClient.addHit(hitDto);
@@ -48,7 +51,6 @@ public class StatsService {
     }
 
     public Map<Long, Long> getViews(List<Event> events) {
-
         Map<Long, Long> views = new HashMap<>();
 
         List<Event> publishedEvents = getPublished(events);
@@ -66,12 +68,9 @@ public class StatsService {
             LocalDateTime start = minPublishedOn.get();
             LocalDateTime end = LocalDateTime.now();
             List<String> uris = publishedEvents.stream()
-                    .map(Event::getId)
-                    .map(id -> ("/events/" + id))
+                    .map(event -> ("/events/" + event.getId()))
                     .collect(Collectors.toList());
-
-            List<ViewStatsDto> stats = getStats(start, end, uris, null);
-
+            List<ViewStatsDto> stats = getStats(start, end, uris, true);
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri()
                         .split("/", 0)[2]);

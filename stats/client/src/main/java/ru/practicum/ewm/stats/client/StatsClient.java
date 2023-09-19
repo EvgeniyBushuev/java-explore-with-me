@@ -3,21 +3,22 @@ package ru.practicum.ewm.stats.client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.ewm.stats.dto.EndpointHitDto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class StatsClient extends BaseClient {
 
     private static final String API_PREFIX = "/hit";
     private static final String GET_STAT_PATH = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
-    private static final DateFormat DF = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
     public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
@@ -36,9 +37,9 @@ public class StatsClient extends BaseClient {
 
         String urisStr = String.join(",", uris);
 
-        String startStr = DF.format(start);
+        String startStr = start.format(DF);
 
-        String endStr = DF.format(end);
+        String endStr = end.format(DF);
 
         Map<String, Object> parameters = Map.of(
                 "start", startStr,

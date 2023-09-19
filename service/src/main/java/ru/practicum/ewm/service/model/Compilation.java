@@ -1,9 +1,6 @@
 package ru.practicum.ewm.service.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import ru.practicum.ewm.service.dto.event.ShortEventDto;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +10,8 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Compilation {
     @Id
     @Column(name = "compilation_id")
