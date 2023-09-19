@@ -100,8 +100,8 @@ public class EventService {
             event.setEventDate(updateEventDto.getEventDate());
         }
 
-        if (updateEventDto.getIsPaid() != null) {
-            event.setIsPaid(updateEventDto.getIsPaid());
+        if (updateEventDto.getPaid() != null) {
+            event.setPaid(updateEventDto.getPaid());
         }
 
         if (updateEventDto.getLocation() != null) {
@@ -112,8 +112,8 @@ public class EventService {
             event.setParticipantLimit(updateEventDto.getParticipantLimit());
         }
 
-        if (updateEventDto.getIsRequestModeration() != null) {
-            event.setIsRequestModeration(updateEventDto.getIsRequestModeration());
+        if (updateEventDto.getRequestModeration() != null) {
+            event.setRequestModeration(updateEventDto.getRequestModeration());
         }
 
         if (updateEventDto.getTitle() != null) {
@@ -309,16 +309,16 @@ public class EventService {
             event.setLocation(getOrSaveLocation(LocationMapper.toDto(userUpdateEventDto.getLocation())));
         }
 
-        if (userUpdateEventDto.getIsPaid() != null) {
-            event.setIsPaid(userUpdateEventDto.getIsPaid());
+        if (userUpdateEventDto.getPaid() != null) {
+            event.setPaid(userUpdateEventDto.getPaid());
         }
 
         if (userUpdateEventDto.getParticipantLimit() != null) {
             event.setParticipantLimit(userUpdateEventDto.getParticipantLimit());
         }
 
-        if (userUpdateEventDto.getIsRequestModeration() != null) {
-            event.setIsRequestModeration(userUpdateEventDto.getIsRequestModeration());
+        if (userUpdateEventDto.getRequestModeration() != null) {
+            event.setRequestModeration(userUpdateEventDto.getRequestModeration());
         }
 
         if (userUpdateEventDto.getStateAction() != null) {

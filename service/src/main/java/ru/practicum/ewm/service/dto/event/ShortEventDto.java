@@ -19,7 +19,7 @@ public class ShortEventDto {
     private Long id;
     private String title;
     private String annotation;
-    private Boolean isPaid;
+    private Boolean paid;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;

@@ -58,7 +58,7 @@ public class ParticipationRequestService {
         participationRequest.setRequester(requester);
         participationRequest.setEvent(event);
         participationRequest.setCreatedTime(LocalDateTime.now());
-        participationRequest.setStatus(event.getIsRequestModeration()
+        participationRequest.setStatus(event.getRequestModeration()
                 && !event.getParticipantLimit().equals(0) ? Status.PENDING : Status.CONFIRMED);
         return ParticipationRequestMapper.toDto(participationRequestRepository.save(participationRequest));
     }

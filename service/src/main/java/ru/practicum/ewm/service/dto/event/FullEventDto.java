@@ -31,12 +31,12 @@ public class FullEventDto {
     private LocalDateTime eventDate;
     private User initiator;
     private Location location;
-    private Boolean isPaid;
+    private Boolean paid;
     private Integer participantLimit;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
-    private Boolean isRequestModeration;
+    private Boolean requestModeration;
     private State state;
     private Long views;
     private Long confirmedRequests;

@@ -28,9 +28,9 @@ public class UpdateEventDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private LocationDto location;
-    private Boolean isPaid;
+    private Boolean paid;
     @PositiveOrZero
     private Integer participantLimit;
-    private Boolean isRequestModeration;
+    private Boolean requestModeration;
     private String stateAction;
 }

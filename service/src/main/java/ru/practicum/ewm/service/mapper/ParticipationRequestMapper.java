@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ParticipationRequestMapper {
     public static ParticipationRequest fromDto(User user, Event event) {
         Status status;
-        if (event.getParticipantLimit() == 0 || !event.getIsRequestModeration()) {
+        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             status = Status.CONFIRMED;
         } else {
             status = Status.PENDING;

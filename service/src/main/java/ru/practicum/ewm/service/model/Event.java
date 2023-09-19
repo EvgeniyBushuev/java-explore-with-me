@@ -31,13 +31,13 @@ public class Event {
     @Column(name = "event_date")
     private LocalDateTime eventDate;
     @Column(name = "paid")
-    private Boolean isPaid;
+    private Boolean paid;
     @Column(name = "participant_limit")
     private Integer participantLimit;
     @Column(name = "published_date")
     private LocalDateTime publishedDate;
     @Column(name = "request_moderation")
-    private Boolean isRequestModeration;
+    private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private State state;
