@@ -18,7 +18,7 @@ public class StatsClient extends BaseClient {
 
     private static final String API_PREFIX = "/hit";
     private static final String GET_STAT_PATH = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
-    private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+    private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
