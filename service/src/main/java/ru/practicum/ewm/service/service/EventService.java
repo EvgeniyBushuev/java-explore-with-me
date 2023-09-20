@@ -309,8 +309,8 @@ public class EventService {
             event.setLocation(getOrSaveLocation(LocationMapper.toDto(userUpdateEventDto.getLocation())));
         }
 
-        if (userUpdateEventDto.getPaid() != null) {
-            event.setIsPaid(userUpdateEventDto.getPaid());
+        if (userUpdateEventDto.getIsPaid() != null) {
+            event.setIsPaid(userUpdateEventDto.getIsPaid());
         }
 
         if (userUpdateEventDto.getParticipantLimit() != null) {
