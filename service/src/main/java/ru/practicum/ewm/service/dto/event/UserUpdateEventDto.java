@@ -35,7 +35,7 @@ public class UserUpdateEventDto {
 
     private Location location;
 
-    private Boolean isPaid;
+    private Boolean paid;
     @PositiveOrZero
     private Integer participantLimit;
 

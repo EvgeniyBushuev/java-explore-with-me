@@ -19,8 +19,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where ((:users) is null or e.initiator.id in :users) " +
             "and ((:states) is null or e.state in :states) " +
             "and ((:categories) is null or e.category.id in :categories) " +
-            "and (:rangeStart is null or e.eventDate >= :rangeStart)" +
-            "and (:rangeEnd is null or e.eventDate <= :rangeEnd)")
+            "and (cast(:rangeStart as date) is null or e.eventDate >= :rangeStart)" +
+            "and (cast(:rangeEnd as date) is null or e.eventDate <= :rangeEnd)")
     List<Event> findAllByAdmin(@Param("users") List<Long> users,
                                @Param("states") List<State> states,
                                @Param("categories") List<Long> categories,
@@ -35,8 +35,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and (lower(e.annotation) like lower(concat('%', :text, '%')) or lower(e.description) like lower(concat('%', :text, '%'))) " +
             "and ((:categories) is null or e.category.id in :categories) " +
             "and ((:paid) is null or e.isPaid = :paid) " +
-            "and (:rangeStart is null or e.eventDate >= :rangeStart)" +
-            "and (:rangeEnd is null or e.eventDate <= :rangeEnd)")
+            "and (cast(:rangeStart as date) is null or e.eventDate >= :rangeStart)" +
+            "and (cast(:rangeEnd as date) is null or e.eventDate <= :rangeEnd)")
     List<Event> getAllByPublic(@Param("text") String text,
                                @Param("categories") List<Long> categories,
                                @Param("paid") Boolean paid,
@@ -50,8 +50,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and (:state is null or e.state = :state) " +
             "and (:categories is null or e.category.id in :categories) " +
             "and (:paid is null or e.isPaid = :paid) " +
-            "and (cast(:rangeStart as java.time.LocalDateTime) is null or e.eventDate >= :rangeStart) " +
-            "and (cast(:rangeEnd as java.time.LocalDateTime) is null or e.eventDate <= :rangeEnd) ")
+            "and (cast(:rangeStart as date) is null or e.eventDate >= :rangeStart) " +
+            "and (cast(:rangeEnd as date) is null or e.eventDate <= :rangeEnd) ")
     List<Event> getAllEvents(@Param("text") String text,
                              @Param("state") State state,
                              @Param("categories") List<Long> categories,
@@ -64,8 +64,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where (:users is null or e.initiator.id in :users) " +
             "and (:states is null or e.state in :states) " +
             "and (:categories is null or e.category.id in :categories) " +
-            "and (cast(:rangeStart as java.time.LocalDateTime) is null or e.eventDate >= :rangeStart) " +
-            "and (cast(:rangeEnd as java.time.LocalDateTime) is null or e.eventDate <= :rangeEnd) ")
+            "and (cast(:rangeStart as date) is null or e.eventDate >= :rangeStart) " +
+            "and (cast(:rangeEnd as date) is null or e.eventDate <= :rangeEnd) ")
     List<Event> getEventsByUserId(@Param("users") List<Long> usersIds,
                                   @Param("states") List<State> states,
                                   @Param("categories") List<Long> categories,
@@ -85,8 +85,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and (:state is null or e.state = :state) " +
             "and (:categories is null or e.category.id in :categories) " +
             "and (:paid is null or e.isPaid = :paid) " +
-            "and (cast(:rangeStart as java.time.LocalDateTime) is null or e.eventDate >= :rangeStart) " +
-            "and (cast(:rangeEnd as java.time.LocalDateTime) is null or e.eventDate <= :rangeEnd) " +
+            "and (cast(:rangeStart as date) is null or e.eventDate >= :rangeStart) " +
+            "and (cast(:rangeEnd as date) is null or e.eventDate <= :rangeEnd) " +
             "AND (SELECT COUNT(pr) FROM ParticipationRequest pr WHERE pr.event.id = e.id " +
             "AND pr.status = 'APPROVE') < e.participantLimit")
     List<Event> getAvailableEvents(@Param("text") String text,
