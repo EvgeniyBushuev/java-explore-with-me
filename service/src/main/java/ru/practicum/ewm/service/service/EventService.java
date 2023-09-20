@@ -101,7 +101,7 @@ public class EventService {
         }
 
         if (updateEventDto.getPaid() != null) {
-            event.setPaid(updateEventDto.getPaid());
+            event.setIsPaid(updateEventDto.getPaid());
         }
 
         if (updateEventDto.getLocation() != null) {
@@ -113,7 +113,7 @@ public class EventService {
         }
 
         if (updateEventDto.getRequestModeration() != null) {
-            event.setRequestModeration(updateEventDto.getRequestModeration());
+            event.setIsRequestModeration(updateEventDto.getRequestModeration());
         }
 
         if (updateEventDto.getTitle() != null) {
@@ -310,7 +310,7 @@ public class EventService {
         }
 
         if (userUpdateEventDto.getPaid() != null) {
-            event.setPaid(userUpdateEventDto.getPaid());
+            event.setIsPaid(userUpdateEventDto.getPaid());
         }
 
         if (userUpdateEventDto.getParticipantLimit() != null) {
@@ -318,7 +318,7 @@ public class EventService {
         }
 
         if (userUpdateEventDto.getRequestModeration() != null) {
-            event.setRequestModeration(userUpdateEventDto.getRequestModeration());
+            event.setIsRequestModeration(userUpdateEventDto.getRequestModeration());
         }
 
         if (userUpdateEventDto.getStateAction() != null) {
