@@ -48,4 +48,5 @@ public class EventControllerPublic {
         log.info("Запрос события с ID {} от PUBLIC", eventId);
         return eventService.getEventByPublic(eventId, request);
     }
+
 }
