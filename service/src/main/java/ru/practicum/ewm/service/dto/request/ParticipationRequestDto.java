@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.ewm.service.model.enus.Status;
+import ru.practicum.ewm.service.model.enums.Status;
 
 import java.time.LocalDateTime;
 

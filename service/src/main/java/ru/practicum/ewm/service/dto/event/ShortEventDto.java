@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.practicum.ewm.service.model.Category;
+import ru.practicum.ewm.service.dto.category.CategoryDto;
 import ru.practicum.ewm.service.model.User;
 
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class ShortEventDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private Category category;
+    private CategoryDto category;
     private User initiator;
     private Long views;
     private Long confirmedRequests;

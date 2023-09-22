@@ -2,7 +2,7 @@ package ru.practicum.ewm.service.model;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.practicum.ewm.service.model.enus.State;
+import ru.practicum.ewm.service.model.enums.State;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

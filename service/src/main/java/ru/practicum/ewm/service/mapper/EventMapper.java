@@ -4,7 +4,7 @@ import ru.practicum.ewm.service.dto.event.FullEventDto;
 import ru.practicum.ewm.service.dto.event.NewEventDto;
 import ru.practicum.ewm.service.dto.event.ShortEventDto;
 import ru.practicum.ewm.service.model.*;
-import ru.practicum.ewm.service.model.enus.State;
+import ru.practicum.ewm.service.model.enums.State;
 
 import java.time.LocalDateTime;
 
@@ -34,7 +34,7 @@ public class EventMapper {
         return ShortEventDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(event.getCategory())
+                .category(CategoryMapper.toDto(event.getCategory()))
                 .eventDate(event.getEventDate())
                 .initiator(event.getInitiator())
                 .paid(event.getIsPaid())
@@ -48,7 +48,7 @@ public class EventMapper {
         return FullEventDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
-                .category(event.getCategory())
+                .category(CategoryMapper.toDto(event.getCategory()))
                 .eventDate(event.getEventDate())
                 .createdOn(event.getCreateDate())
                 .description(event.getDescription())

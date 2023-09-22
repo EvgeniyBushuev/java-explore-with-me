@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.ewm.service.model.Location;
+import ru.practicum.ewm.service.model.enums.EventReview;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
@@ -41,5 +42,5 @@ public class UserUpdateEventDto {
 
     private Boolean requestModeration;
 
-    private String stateAction;
+    private EventReview stateAction;
 }

@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.service.dto.event.FullEventDto;
 import ru.practicum.ewm.service.dto.event.UpdateEventDto;
-import ru.practicum.ewm.service.model.enus.State;
+import ru.practicum.ewm.service.model.enums.State;
 import ru.practicum.ewm.service.service.EventService;
 
 import javax.validation.Valid;

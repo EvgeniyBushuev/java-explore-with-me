@@ -17,18 +17,19 @@ import ru.practicum.ewm.service.mapper.EventMapper;
 import ru.practicum.ewm.service.mapper.LocationMapper;
 import ru.practicum.ewm.service.mapper.ParticipationRequestMapper;
 import ru.practicum.ewm.service.model.*;
-import ru.practicum.ewm.service.model.enus.SortType;
-import ru.practicum.ewm.service.model.enus.State;
-import ru.practicum.ewm.service.model.enus.Status;
+import ru.practicum.ewm.service.model.enums.SortType;
+import ru.practicum.ewm.service.model.enums.State;
+import ru.practicum.ewm.service.model.enums.Status;
 import ru.practicum.ewm.service.storage.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm.service.model.enus.Status.CONFIRMED;
-import static ru.practicum.ewm.service.model.enus.Status.REJECTED;
+import static ru.practicum.ewm.service.model.enums.EventReview.CANCEL_REVIEW;
+import static ru.practicum.ewm.service.model.enums.EventReview.SEND_TO_REVIEW;
+import static ru.practicum.ewm.service.model.enums.Status.CONFIRMED;
+import static ru.practicum.ewm.service.model.enums.Status.REJECTED;
 
 
 @Service
@@ -36,6 +37,7 @@ import static ru.practicum.ewm.service.model.enus.Status.REJECTED;
 public class EventService {
     private final EventRepository eventRepository;
     private final ParticipationRequestRepository participationRequestRepository;
+    private final ParticipationRequestService requestService;
     private final StatsService statsService;
     private final LocationRepository locationRepository;
     private final CategoryRepository categoryRepository;
@@ -50,7 +52,7 @@ public class EventService {
         List<Event> events = eventRepository.findAllByAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
 
         Map<Long, Long> views = statsService.getViews(events);
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(events);
 
         List<FullEventDto> fullEventDtos = events.stream()
                 .map(EventMapper::toFullDto).collect(Collectors.toList());
@@ -121,7 +123,7 @@ public class EventService {
         }
 
         Map<Long, Long> views = statsService.getViews(List.of(event));
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(List.of(event));
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(List.of(event));
 
         event.setViews(views.getOrDefault(event.getId(), 0L));
         event.setConfirmedRequests(confirmedRequests.getOrDefault(event.getId(), 0L));
@@ -131,9 +133,7 @@ public class EventService {
 
     public List<ShortEventDto> getEventsByPublic(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-            Boolean onlyAvailable, SortType sort, int from, int size, HttpServletRequest request) {
-
-        statsService.addHit(request);
+            Boolean onlyAvailable, SortType sort, int from, int size) {
 
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Start date must be before end date");
@@ -146,17 +146,14 @@ public class EventService {
             return Collections.emptyList();
         }
 
-        Map<Long, Integer> eventsParticipantLimit = new HashMap<>();
-
-        for (Event event : events) {
-            eventsParticipantLimit.put(event.getId(), event.getParticipantLimit());
-        }
+        Map<Long, Integer> eventsParticipantLimit = events.stream()
+                .collect(Collectors.toMap(Event::getId, Event::getParticipantLimit));
 
         List<ShortEventDto> shortEventDto = events.stream()
                 .map(EventMapper::toShortDto).collect(Collectors.toList());
 
         Map<Long, Long> views = statsService.getViews(events);
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(events);
 
         for (ShortEventDto shortDto : shortEventDto) {
             shortDto.setConfirmedRequests(confirmedRequests.getOrDefault(shortDto.getId(), 0L));
@@ -182,18 +179,16 @@ public class EventService {
         return shortEventDto;
     }
 
-    public FullEventDto getEventByPublic(Long eventId, HttpServletRequest request) {
-
-        statsService.addHit(request);
+    public FullEventDto getEventByPublic(Long eventId) {
 
         Event event = findEventById(eventId);
 
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new NotFoundException("Event wit id=" + eventId + "already exist");
+            throw new NotFoundException("Event wit id=" + eventId + " not exists or not published");
         }
 
         Map<Long, Long> views = statsService.getViews(List.of(event));
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(List.of(event));
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(List.of(event));
 
         event.setViews(views.getOrDefault(event.getId(), 0L));
         event.setConfirmedRequests(confirmedRequests.getOrDefault(event.getId(), 0L));
@@ -210,7 +205,7 @@ public class EventService {
         List<Event> events = eventRepository.findByInitiatorId(userId, pageable);
 
         Map<Long, Long> views = statsService.getViews(events);
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(events);
 
         for (Event event : events) {
             event.setViews(views.getOrDefault(event.getId(), 0L));
@@ -232,10 +227,10 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
         Map<Long, Long> views = statsService.getViews(List.of(eventByInitiator));
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(List.of(eventByInitiator));
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(List.of(eventByInitiator));
 
         eventByInitiator.setViews(views.getOrDefault(eventByInitiator.getId(), 0L));
-        eventByInitiator.setViews(confirmedRequests.getOrDefault(eventByInitiator.getId(), 0L));
+        eventByInitiator.setConfirmedRequests(confirmedRequests.getOrDefault(eventByInitiator.getId(), 0L));
 
         eventRepository.save(eventByInitiator);
 
@@ -284,8 +279,7 @@ public class EventService {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
 
-        if (!(event.getState().equals(State.CANCELED) ||
-                event.getState().equals(State.PENDING))) {
+        if (!(event.getState() == State.CANCELED || event.getState() == State.PENDING)) {
             throw new DataConflictException("Only pending or canceled events can be changed");
         }
 
@@ -323,10 +317,10 @@ public class EventService {
 
         if (userUpdateEventDto.getStateAction() != null) {
             switch (userUpdateEventDto.getStateAction()) {
-                case "SEND_TO_REVIEW":
+                case SEND_TO_REVIEW:
                     event.setState(State.PENDING);
                     break;
-                case "CANCEL_REVIEW":
+                case CANCEL_REVIEW:
                     event.setState(State.CANCELED);
                     break;
             }
@@ -337,7 +331,7 @@ public class EventService {
         }
 
         Map<Long, Long> views = statsService.getViews(List.of(event));
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(List.of(event));
+        Map<Long, Long> confirmedRequests = requestService.getConfirmedRequests(List.of(event));
 
         event.setViews(views.getOrDefault(event.getId(), 0L));
         event.setConfirmedRequests(confirmedRequests.getOrDefault(event.getId(), 0L));

@@ -7,8 +7,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.service.dto.event.FullEventDto;
 import ru.practicum.ewm.service.dto.event.ShortEventDto;
-import ru.practicum.ewm.service.model.enus.SortType;
+import ru.practicum.ewm.service.model.enums.SortType;
 import ru.practicum.ewm.service.service.EventService;
+import ru.practicum.ewm.service.service.StatsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.List;
 @Slf4j
 public class EventControllerPublic {
     private final EventService eventService;
+    private final StatsService statsService;
 
     public static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -39,14 +41,16 @@ public class EventControllerPublic {
                                       HttpServletRequest request) {
 
         log.info("Запрос списка событий от PUBLIC ");
-        return eventService.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+        statsService.addHit(request);
+        return eventService.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @GetMapping("{eventId}")
     public FullEventDto getById(@PathVariable long eventId, HttpServletRequest request) {
 
         log.info("Запрос события с ID {} от PUBLIC", eventId);
-        return eventService.getEventByPublic(eventId, request);
+        statsService.addHit(request);
+        return eventService.getEventByPublic(eventId);
     }
 
 }

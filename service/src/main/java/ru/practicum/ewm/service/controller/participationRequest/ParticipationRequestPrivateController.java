@@ -35,6 +35,6 @@ public class ParticipationRequestPrivateController {
     public ParticipationRequestDto cancelEventRequest(@PathVariable Long userId,
                                                       @PathVariable Long requestId) {
         log.info("Запрос на отмену участия в событии от пользователя с id {}", userId);
-        return requestService.update(userId, requestId);
+        return requestService.cancelRequest(userId, requestId);
     }
 }

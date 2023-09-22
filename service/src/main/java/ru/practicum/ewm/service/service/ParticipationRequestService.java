@@ -9,14 +9,16 @@ import ru.practicum.ewm.service.mapper.ParticipationRequestMapper;
 import ru.practicum.ewm.service.model.Event;
 import ru.practicum.ewm.service.model.ParticipationRequest;
 import ru.practicum.ewm.service.model.User;
-import ru.practicum.ewm.service.model.enus.State;
-import ru.practicum.ewm.service.model.enus.Status;
+import ru.practicum.ewm.service.model.enums.State;
+import ru.practicum.ewm.service.model.enums.Status;
 import ru.practicum.ewm.service.storage.EventRepository;
 import ru.practicum.ewm.service.storage.ParticipationRequestRepository;
 import ru.practicum.ewm.service.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class ParticipationRequestService {
     private final ParticipationRequestRepository participationRequestRepository;
     private final UserRepository userRepository;
+    private final StatsService statsService;
     private final EventRepository eventRepository;
 
     public List<ParticipationRequestDto> getAll(long userId) {
@@ -63,7 +66,7 @@ public class ParticipationRequestService {
         return ParticipationRequestMapper.toDto(participationRequestRepository.save(participationRequest));
     }
 
-    public ParticipationRequestDto update(long userId, long requestId) {
+    public ParticipationRequestDto cancelRequest(long userId, long requestId) {
         findUserById(userId);
         ParticipationRequest participationRequest = findParticipationRequestById(requestId);
 
@@ -74,6 +77,21 @@ public class ParticipationRequestService {
         participationRequest.setStatus(Status.CANCELED);
 
         return ParticipationRequestMapper.toDto(participationRequestRepository.save(participationRequest));
+    }
+
+    public Map<Long, Long> getConfirmedRequests(List<Event> events) {
+        List<Long> eventsId = statsService.getPublished(events).stream()
+                .map(Event::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, Long> requestStats = new HashMap<>();
+
+        if (!eventsId.isEmpty()) {
+            participationRequestRepository.getConfirmedRequests(eventsId)
+                    .forEach(stat -> requestStats.put(stat.getEventId(), stat.getConfirmedRequests()));
+        }
+
+        return requestStats;
     }
 
 

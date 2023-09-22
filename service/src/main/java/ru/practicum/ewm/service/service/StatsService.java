@@ -81,22 +81,7 @@ public class StatsService {
         return views;
     }
 
-    public Map<Long, Long> getConfirmedRequests(List<Event> events) {
-        List<Long> eventsId = getPublished(events).stream()
-                .map(Event::getId)
-                .collect(Collectors.toList());
-
-        Map<Long, Long> requestStats = new HashMap<>();
-
-        if (!eventsId.isEmpty()) {
-            requestRepository.getConfirmedRequests(eventsId)
-                    .forEach(stat -> requestStats.put(stat.getEventId(), stat.getConfirmedRequests()));
-        }
-
-        return requestStats;
-    }
-
-    private List<Event> getPublished(List<Event> events) {
+    public List<Event> getPublished(List<Event> events) {
         return events.stream()
                 .filter(event -> event.getPublishedDate() != null)
                 .collect(Collectors.toList());

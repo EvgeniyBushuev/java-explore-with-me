@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.practicum.ewm.service.dto.request.ParticipationRequestStats;
+import ru.practicum.ewm.service.model.ParticipationRequestStats;
 import ru.practicum.ewm.service.model.ParticipationRequest;
-import ru.practicum.ewm.service.model.enus.Status;
+import ru.practicum.ewm.service.model.enums.Status;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     @Query("select count(pr) from ParticipationRequest pr where pr.event.id = :eventId and pr.status = :status")
     Integer countByEventIdAndStatus(@Param("eventId") Long eventId, @Param("status") Status status);
 
-    @Query("select new ru.practicum.ewm.service.dto.request.ParticipationRequestStats(r.event.id, count(r.id)) " +
+    @Query("select new ru.practicum.ewm.service.model.ParticipationRequestStats(r.event.id, count(r.id)) " +
             "from ParticipationRequest as r " +
             "where r.event.id in ?1 " +
             "and r.status = 'CONFIRMED' " +

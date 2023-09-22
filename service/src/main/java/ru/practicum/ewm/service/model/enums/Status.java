@@ -1,4 +1,4 @@
-package ru.practicum.ewm.service.model.enus;
+package ru.practicum.ewm.service.model.enums;
 
 public enum Status {
     PENDING,
