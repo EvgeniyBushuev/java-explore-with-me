@@ -42,7 +42,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentDto> getAll(Long userId, Integer from, Integer size) {
         User author = userService.getById(userId);
-        Pageable pageable = PageRequest.of(from/size, size);
+        Pageable pageable = PageRequest.of(from / size, size);
         return commentRepository.findAllByAuthor(author, pageable).stream().map(CommentMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -95,7 +95,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentDto> getAllCommentsByEvent(Long eventId, int from, int size) {
         Event event = eventService.findEventById(eventId);
-        Pageable pageable = PageRequest.of(from/size, size);
+        Pageable pageable = PageRequest.of(from / size, size);
         return commentRepository.findAllByEvent(event, pageable).stream().map(CommentMapper::toDto)
                 .collect(Collectors.toList());
     }
