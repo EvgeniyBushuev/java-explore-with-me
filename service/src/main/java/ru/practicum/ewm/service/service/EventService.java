@@ -402,7 +402,7 @@ public class EventService {
                 .orElseThrow(() -> new NotFoundException("User with id=" + id + " was not found"));
     }
 
-    private Event findEventById(long id) {
+    public Event findEventById(long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + id + " was not found"));
     }
