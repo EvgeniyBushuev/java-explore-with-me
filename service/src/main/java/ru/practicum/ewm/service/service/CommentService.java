@@ -28,7 +28,7 @@ public class CommentService {
     private final UserService userService;
 
     @Transactional(readOnly = true)
-    public Comment getCommentById(Long commentId) {
+    private Comment getCommentById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("Comment was not found id=" + commentId));
     }
@@ -51,7 +51,7 @@ public class CommentService {
     public CommentDto add(NewCommentDto dto, Long userId, Long eventId) {
         Event event = eventService.findEventById(eventId);
         User author = userService.getById(userId);
-        if (State.PUBLISHED.equals(event.getState()))
+        if (State.PUBLISHED != event.getState())
             throw new DataConflictException("Only publish event can been commented");
         Comment comment = new Comment();
         comment.setAuthor(author);
@@ -63,11 +63,11 @@ public class CommentService {
     @Transactional
     public CommentDto update(NewCommentDto dto, Long userId, Long commentId) {
         Comment commentFromDB = getCommentById(commentId);
-        User author = userService.getById(userId);
-        if (!commentFromDB.getAuthor().getId().equals(author.getId()))
+        User editor = userService.getById(userId);
+        if (!commentFromDB.getAuthor().getId().equals(editor.getId()))
             throw new DataConflictException("Only comment owner or admin can been edit comment");
         commentFromDB.setText(dto.getText());
-        return CommentMapper.toDto(commentFromDB);
+        return CommentMapper.toDto(commentRepository.save(commentFromDB));
     }
 
     @Transactional
@@ -83,7 +83,7 @@ public class CommentService {
     public CommentDto updateByAdmin(Long commentId, NewCommentDto dto) {
         Comment commentFromDB = getCommentById(commentId);
         commentFromDB.setText(dto.getText());
-        return CommentMapper.toDto(commentFromDB);
+        return CommentMapper.toDto(commentRepository.save(commentFromDB));
     }
 
     @Transactional
@@ -94,9 +94,8 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentDto> getAllCommentsByEvent(Long eventId, int from, int size) {
-        Event event = eventService.findEventById(eventId);
         Pageable pageable = PageRequest.of(from / size, size);
-        return commentRepository.findAllByEvent(event, pageable).stream().map(CommentMapper::toDto)
+        return commentRepository.findAllByEventId(eventId, pageable).stream().map(CommentMapper::toDto)
                 .collect(Collectors.toList());
     }
 }
